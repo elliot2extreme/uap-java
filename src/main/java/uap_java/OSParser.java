@@ -14,116 +14,116 @@
  * limitations under the License.
  */
 
-package ua_parser;
+package uap_java;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Operating System parser using ua-parser. Extracts OS information from user agent strings.
+ * Operating System parser using ua-parser. Extracts OS information from user
+ * agent strings.
  *
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class OSParser {
-  private final List<OSPattern> patterns;
 
-  public OSParser(List<OSPattern> patterns) {
-    this.patterns = patterns;
-  }
+	private final List<OSPattern> patterns;
 
-  public static OSParser fromList(List<Map<String,String>> configList) {
-    List<OSPattern> configPatterns = new ArrayList<OSPattern>();
+	public OSParser(List<OSPattern> patterns) {
+		this.patterns = patterns;
+	}
 
-    for (Map<String,String> configMap : configList) {
-      configPatterns.add(OSParser.patternFromMap(configMap));
-    }
-    return new OSParser(configPatterns);
-  }
+	public static OSParser fromList(List<Map<String, String>> configList) {
+		List<OSPattern> configPatterns = new ArrayList<OSPattern>();
 
-  public OS parse(String agentString) {
-    if (agentString == null) {
-      return null;
-    }
+		for (Map<String, String> configMap : configList) {
+			configPatterns.add(OSParser.patternFromMap(configMap));
+		}
+		return new OSParser(configPatterns);
+	}
 
-    OS os;
-    for (OSPattern p : patterns) {
-      if ((os = p.match(agentString)) != null) {
-        return os;
-      }
-    }
-    return new OS("Other", null, null, null, null);
-  }
+	public OS parse(String agentString) {
+		if (agentString == null) {
+			return null;
+		}
 
-  protected static OSPattern patternFromMap(Map<String, String> configMap) {
-    String regex = configMap.get("regex");
-    if (regex == null) {
-      throw new IllegalArgumentException("OS is missing regex");
-    }
+		OS os;
+		for (OSPattern p : patterns) {
+			if ((os = p.match(agentString)) != null) {
+				return os;
+			}
+		}
+		return new OS("Other", null, null, null, null);
+	}
 
-    return(new OSPattern(Pattern.compile(regex),
-                         configMap.get("os_replacement"),
-                         configMap.get("os_v1_replacement"),
-                         configMap.get("os_v2_replacement"),
-                         configMap.get("os_v3_replacement")));
-  }
+	protected static OSPattern patternFromMap(Map<String, String> configMap) {
+		String regex = configMap.get("regex");
+		if (regex == null) {
+			throw new IllegalArgumentException("OS is missing regex");
+		}
 
-  protected static class OSPattern {
-    private final Pattern pattern;
-    private final String osReplacement, v1Replacement, v2Replacement, v3Replacement;
+		return (new OSPattern(Pattern.compile(regex), configMap.get("os_replacement"),
+				configMap.get("os_v1_replacement"), configMap.get("os_v2_replacement"),
+				configMap.get("os_v3_replacement")));
+	}
 
-    public OSPattern(Pattern pattern, String osReplacement, String v1Replacement, String v2Replacement, String v3Replacement) {
-      this.pattern = pattern;
-      this.osReplacement = osReplacement;
-      this.v1Replacement = v1Replacement;
-      this.v2Replacement = v2Replacement;
-      this.v3Replacement = v3Replacement;
-    }
+	protected static class OSPattern {
+		private final Pattern pattern;
+		private final String osReplacement, v1Replacement, v2Replacement, v3Replacement;
 
-    public OS match(String agentString) {
-      String family = null, v1 = null, v2 = null, v3 = null, v4 = null;
-      Matcher matcher = pattern.matcher(agentString);
+		public OSPattern(Pattern pattern, String osReplacement, String v1Replacement, String v2Replacement,
+				String v3Replacement) {
+			this.pattern = pattern;
+			this.osReplacement = osReplacement;
+			this.v1Replacement = v1Replacement;
+			this.v2Replacement = v2Replacement;
+			this.v3Replacement = v3Replacement;
+		}
 
-      if (!matcher.find()) {
-        return null;
-      }
+		public OS match(String agentString) {
+			String family = null, v1 = null, v2 = null, v3 = null, v4 = null;
+			Matcher matcher = pattern.matcher(agentString);
 
-      int groupCount = matcher.groupCount();
+			if (!matcher.find()) {
+				return null;
+			}
 
-      if (osReplacement != null) {
-          if (groupCount >= 1) {
-              family = Pattern.compile("(" + Pattern.quote("$1") + ")")
-                              .matcher(osReplacement)
-                              .replaceAll(matcher.group(1));
-          } else { 
-              family = osReplacement; 
-          }
-      } else if (groupCount >= 1) {
-        family = matcher.group(1);
-      }
+			int groupCount = matcher.groupCount();
 
-      if (v1Replacement != null) {
-        v1 = v1Replacement;
-      } else if (groupCount >= 2) {
-        v1 = matcher.group(2);
-      }
-      if (v2Replacement != null) {
-        v2 = v2Replacement;
-      } else if (groupCount >= 3) {
-        v2 = matcher.group(3);
-      }
-      if (v3Replacement != null) {
-        v3 = v3Replacement;
-      } else if (groupCount >= 4) {
-        v3 = matcher.group(4);
-      }
-      if (groupCount >= 5) {
-        v4 = matcher.group(5);
-      }
+			if (osReplacement != null) {
+				if (groupCount >= 1) {
+					family = Pattern.compile("(" + Pattern.quote("$1") + ")").matcher(osReplacement)
+							.replaceAll(matcher.group(1));
+				} else {
+					family = osReplacement;
+				}
+			} else if (groupCount >= 1) {
+				family = matcher.group(1);
+			}
 
-      return family == null ? null : new OS(family, v1, v2, v3, v4);
-    }
-  }
+			if (v1Replacement != null) {
+				v1 = v1Replacement;
+			} else if (groupCount >= 2) {
+				v1 = matcher.group(2);
+			}
+			if (v2Replacement != null) {
+				v2 = v2Replacement;
+			} else if (groupCount >= 3) {
+				v2 = matcher.group(3);
+			}
+			if (v3Replacement != null) {
+				v3 = v3Replacement;
+			} else if (groupCount >= 4) {
+				v3 = matcher.group(4);
+			}
+			if (groupCount >= 5) {
+				v4 = matcher.group(5);
+			}
+
+			return family == null ? null : new OS(family, v1, v2, v3, v4);
+		}
+	}
 }

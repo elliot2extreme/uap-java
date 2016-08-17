@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package ua_parser;
+package uap_java;
+
+import uap_java.UserAgent;
 
 /**
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class UserAgentTest extends DataTest<UserAgent> {
-  @Override
-  protected UserAgent getRandomInstance(long seed, StringGenerator g) {
-    random.setSeed(seed);
-    String family = g.getString(256),
-           major = (random.nextBoolean() ? g.getString(8): null),
-           minor = (random.nextBoolean() ? g.getString(8): null),
-           patch = (random.nextBoolean() ? g.getString(8): null);
-    return new UserAgent(family, major, minor, patch);
-  }
 
-  @Override
-  protected UserAgent getBlankInstance() {
-    return new UserAgent(null, null, null, null);
-  }
+	@Override
+	protected UserAgent getRandomInstance(long seed, StringGenerator g) {
+		random.setSeed(seed);
+		String family = g.getString(256), major = (random.nextBoolean() ? g.getString(8) : null),
+				minor = (random.nextBoolean() ? g.getString(8) : null),
+				patch = (random.nextBoolean() ? g.getString(8) : null);
+		return new UserAgent(family, major, minor, patch);
+	}
+
+	@Override
+	protected UserAgent getBlankInstance() {
+		return new UserAgent(null, null, null, null);
+	}
 }

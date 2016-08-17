@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package ua_parser;
+package uap_java;
+
+import uap_java.Device;
 
 /**
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class DeviceTest extends DataTest<Device> {
-  @Override
-  protected Device getRandomInstance(long seed, StringGenerator g) {
-    random.setSeed(seed);
-    String family = g.getString(256);
-    return new Device(family);
-  }
 
-  @Override
-  protected Device getBlankInstance() {
-    return new Device(null);
-  }
+	@Override
+	protected Device getRandomInstance(long seed, StringGenerator g) {
+		random.setSeed(seed);
+		String family = g.getString(256);
+		return new Device(family);
+	}
+
+	@Override
+	protected Device getBlankInstance() {
+		return new Device(null);
+	}
 }
