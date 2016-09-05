@@ -12,8 +12,8 @@ Build:
 Usage:
 --------
 ```java
-import ua_parser.Parser;
-import ua_parser.Client;
+import uap_java.Parser;
+import uap_java.Client;
 
 ...
 

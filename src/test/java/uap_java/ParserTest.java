@@ -41,7 +41,7 @@ import uap_java.UserAgent;
  */
 public class ParserTest {
 
-	final String TEST_RESOURCE_PATH = "/ua_parser/";
+	final String TEST_RESOURCE_PATH = "/uap_core/";
 	Yaml yaml = new Yaml();
 	Parser parser;
 
